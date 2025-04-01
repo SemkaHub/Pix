@@ -1,10 +1,10 @@
-package com.example.pix.data.room
+package com.example.pix.data.room.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "pictures")
-data class PictureDbo (
+data class PictureEntity (
     @PrimaryKey
     val id: String,
     val title: String,
