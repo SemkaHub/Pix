@@ -1,5 +1,6 @@
 package com.example.pix.di
 
+import com.example.pix.data.repository.PictureRepositoryImpl
 import com.example.pix.domain.repository.PictureRepository
 import dagger.Binds
 import dagger.Module
