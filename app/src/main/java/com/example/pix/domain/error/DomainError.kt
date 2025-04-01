@@ -1,6 +1,6 @@
 package com.example.pix.domain.error
 
-sealed class DomainError {
+sealed class DomainError: Throwable() {
     data object Network : DomainError() {
         private fun readResolve(): Any = Network
     }
