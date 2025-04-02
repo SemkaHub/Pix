@@ -11,9 +11,9 @@ fun PictureEntity.toDomain(): Picture = Picture(
     title = title
 )
 
-fun Picture.toEntity(label: String?): PictureEntity = PictureEntity(
+fun Picture.toEntity(label: String = DEFAULT_LABEL): PictureEntity = PictureEntity(
     id = id,
     url = url,
     title = title,
-    label = label ?: DEFAULT_LABEL
+    label = label
 )
