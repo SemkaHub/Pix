@@ -16,4 +16,7 @@ interface PictureDao {
 
     @Query("select * from pictures")
     suspend fun getAll(): List<PictureEntity>
+
+    @Query("select * from pictures where id = :id")
+    suspend fun getById(id: String): PictureEntity
 }
