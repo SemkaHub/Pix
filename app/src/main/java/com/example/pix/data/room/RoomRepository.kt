@@ -23,4 +23,8 @@ class RoomRepository @Inject constructor(
         pictureDao.insertAll(entities)
     }
 
+    suspend fun getById(id: String): Picture {
+        val entity = pictureDao.getById(id)
+        return entity.toDomain()
+    }
 }
