@@ -19,8 +19,7 @@ class PictureRepositoryImpl @Inject constructor(
 
     override suspend fun getPictures(): Result<Unit> = runCatching {
         val remotePictures = flickrRepository.search().getOrThrow()
-        roomRepository.clearAll()
-        roomRepository.insertAll(remotePictures)
+        roomRepository.replaceAll(remotePictures)
         //roomRepository.getPictures()
     }.fold(
         onSuccess = { Result.success(it) },

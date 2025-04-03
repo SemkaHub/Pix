@@ -4,11 +4,18 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.example.pix.data.room.entity.PictureEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PictureDao {
+
+    @Transaction
+    suspend fun clearAndInsertAll(pictures: List<PictureEntity>) {
+        clearAll()
+        insertAll(pictures)
+    }
 
     @Query("select * from pictures")
     fun getPicturesFlow(): Flow<List<PictureEntity>>

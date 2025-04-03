@@ -10,6 +10,10 @@ import javax.inject.Inject
 class RoomRepository @Inject constructor(
     private val pictureDao: PictureDao
 ) {
+    suspend fun replaceAll(pictures: List<Picture>) {
+        pictureDao.clearAndInsertAll(pictures.map { it.toEntity() })
+    }
+
     fun getPicturesFlow() = pictureDao.getPicturesFlow().map { entities ->
         entities.map { it.toDomain() }
     }
