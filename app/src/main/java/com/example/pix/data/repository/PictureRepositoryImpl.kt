@@ -15,11 +15,13 @@ class PictureRepositoryImpl @Inject constructor(
     private val roomRepository: RoomRepository
 ) : PictureRepository {
 
-    override suspend fun getPictures(): Result<List<Picture>> = runCatching {
+    override fun observePictures() = roomRepository.getPicturesFlow()
+
+    override suspend fun getPictures(): Result<Unit> = runCatching {
         val remotePictures = flickrRepository.search().getOrThrow()
         roomRepository.clearAll()
         roomRepository.insertAll(remotePictures)
-        roomRepository.getPictures()
+        //roomRepository.getPictures()
     }.fold(
         onSuccess = { Result.success(it) },
         onFailure = { Result.failure(it) }
