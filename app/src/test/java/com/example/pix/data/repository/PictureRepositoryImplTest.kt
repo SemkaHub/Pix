@@ -40,10 +40,6 @@ class PictureRepositoryImplTest {
         title = "Title 2"
     )
     private val remotePictures = listOf(testPicture1, testPicture2)
-    private val localPictures = listOf(
-        testPicture1.copy(title = "Local Title 1"),
-        testPicture2.copy(title = "Local Title 2")
-    )
 
     @Before
     fun setUp() {
@@ -55,27 +51,25 @@ class PictureRepositoryImplTest {
     // --- Тесты для getPictures ---
 
     @Test
-    fun `getPictures() success - fetches remote, clears, inserts, returns local`() = runTest {
+    fun `getPictures() success - fetches remote, clears, inserts`() = runTest {
 
         // Arrange
         coEvery { flickrRepository.search() } returns Result.success(remotePictures)
 
         coEvery { roomRepository.clearAll() } just Runs
         coEvery { roomRepository.insertAll(remotePictures) } just Runs
-        coEvery { roomRepository.getPictures() } returns localPictures
 
         // Act
         val result = pictureRepository.getPictures()
 
         // Assert
         assertTrue(result.isSuccess)
-        assertEquals(localPictures, result.getOrNull())
+        assertEquals(Unit, result.getOrNull())
 
         coVerifyOrder {
             flickrRepository.search()
             roomRepository.clearAll()
             roomRepository.insertAll(remotePictures)
-            roomRepository.getPictures()
         }
     }
 
@@ -145,32 +139,6 @@ class PictureRepositoryImplTest {
         }
         // Последний шаг не должен был выполниться
         coVerify(exactly = 0) { roomRepository.getPictures() }
-    }
-
-    @Test
-    fun `getPictures() failure - roomRepository getPictures fails`() = runTest {
-
-        // Arrange
-        val exception = RuntimeException("DB get error")
-        coEvery { flickrRepository.search() } returns Result.success(remotePictures)
-        coEvery { roomRepository.clearAll() } just Runs
-        coEvery { roomRepository.insertAll(remotePictures) } just Runs
-        coEvery { roomRepository.getPictures() } throws exception
-
-        // Act
-        val result = pictureRepository.getPictures()
-
-        // Assert
-        assertTrue(result.isFailure)
-        assertEquals(exception, result.exceptionOrNull())
-
-        // Проверяем вызовы
-        coVerifyOrder {
-            flickrRepository.search()
-            roomRepository.clearAll()
-            roomRepository.insertAll(remotePictures)
-            roomRepository.getPictures()
-        }
     }
 
 
