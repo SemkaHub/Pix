@@ -5,9 +5,14 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.pix.data.room.entity.PictureEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PictureDao {
+
+    @Query("select * from pictures")
+    fun getPicturesFlow(): Flow<List<PictureEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(users: List<PictureEntity>)
 
