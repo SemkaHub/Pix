@@ -56,8 +56,7 @@ class PictureRepositoryImplTest {
         // Arrange
         coEvery { flickrRepository.search() } returns Result.success(remotePictures)
 
-        coEvery { roomRepository.clearAll() } just Runs
-        coEvery { roomRepository.insertAll(remotePictures) } just Runs
+        coEvery { roomRepository.replaceAll(remotePictures) } just Runs
 
         // Act
         val result = pictureRepository.getPictures()
@@ -68,8 +67,7 @@ class PictureRepositoryImplTest {
 
         coVerifyOrder {
             flickrRepository.search()
-            roomRepository.clearAll()
-            roomRepository.insertAll(remotePictures)
+            roomRepository.replaceAll(remotePictures)
         }
     }
 
@@ -93,12 +91,12 @@ class PictureRepositoryImplTest {
     }
 
     @Test
-    fun `getPictures() failure - roomRepository clearAll fails`() = runTest {
+    fun `getPictures() failure - roomRepository replaceAll fails`() = runTest {
 
         // Arrange
         val exception = RuntimeException("DB clear error")
         coEvery { flickrRepository.search() } returns Result.success(remotePictures)
-        coEvery { roomRepository.clearAll() } throws exception
+        coEvery { roomRepository.replaceAll(remotePictures) } throws exception
 
         // Act
         val result = pictureRepository.getPictures()
@@ -109,35 +107,8 @@ class PictureRepositoryImplTest {
 
         // Проверяем вызовы
         coVerify { flickrRepository.search() }
-        coVerify { roomRepository.clearAll() }
+        coVerify { roomRepository.replaceAll(remotePictures) }
         // Последующие шаги не должны были выполниться
-        coVerify(exactly = 0) { roomRepository.insertAll(any()) }
-        coVerify(exactly = 0) { roomRepository.getPictures() }
-    }
-
-    @Test
-    fun `getPictures() failure - roomRepository insertAll fails`() = runTest {
-
-        // Arrange
-        val exception = RuntimeException("DB insert error")
-        coEvery { flickrRepository.search() } returns Result.success(remotePictures)
-        coEvery { roomRepository.clearAll() } just Runs
-        coEvery { roomRepository.insertAll(remotePictures) } throws exception
-
-        // Act
-        val result = pictureRepository.getPictures()
-
-        // Assert
-        assertTrue(result.isFailure)
-        assertEquals(exception, result.exceptionOrNull())
-
-        // Проверяем вызовы
-        coVerifyOrder {
-            flickrRepository.search()
-            roomRepository.clearAll()
-            roomRepository.insertAll(remotePictures)
-        }
-        // Последний шаг не должен был выполниться
         coVerify(exactly = 0) { roomRepository.getPictures() }
     }
 
