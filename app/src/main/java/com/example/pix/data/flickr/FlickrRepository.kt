@@ -29,7 +29,7 @@ class FlickrRepository @Inject constructor(
         count: Int = 100,
         quality: String = DEFAULT_QUALITY
     ): Result<List<Picture>> = runCatching {
-        val result = flickrApi.search(text, page, count)
+        val result = flickrApi.search(text = text, page = page, count = count)
         if (result.stat != RESPONSE_OK) {
             throw HttpException(
                 Response.error<Unit>(
