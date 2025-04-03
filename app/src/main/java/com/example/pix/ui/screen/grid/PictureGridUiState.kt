@@ -6,6 +6,6 @@ import com.example.pix.domain.model.Picture
 sealed interface PictureGridUiState {
     data object Loading : PictureGridUiState
     data object Empty : PictureGridUiState
-    data class Success(val images: List<Picture>) : PictureGridUiState
+    data class Success(val pictures: List<Picture>) : PictureGridUiState
     data class Error(val error: DomainError) : PictureGridUiState
 }

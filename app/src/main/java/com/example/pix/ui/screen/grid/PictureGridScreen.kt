@@ -1,6 +1,8 @@
 package com.example.pix.ui.screen.grid
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,9 +15,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,29 +42,58 @@ import com.example.pix.domain.error.DomainError
 import com.example.pix.domain.model.Picture
 import com.example.pix.ui.states.ErrorState
 import com.example.pix.ui.states.LoadingIndicator
+import com.example.pix.ui.utils.getFriendlyMessage
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collectLatest
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PictureGridScreen(
     viewModel: PictureGridScreenViewModel = hiltViewModel(),
     onPictureClick: (pictureId: String) -> Unit
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
+    val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
-    when (val state = uiState) {
-        is PictureGridUiState.Loading -> LoadingIndicator()
-        is PictureGridUiState.Empty -> EmptyState()
-        is PictureGridUiState.Success -> {
-            Log.d("PictureGridScreen", "Success state: ${state.images}")
-            PictureGrid(
-                pictures = state.images,
-                onPictureClick = onPictureClick
+    // Показываем Toast при фоновых ошибках
+    ShowToastOnError(errorEventFlow = viewModel.transientErrorFlow, context = context)
+
+    PullToRefreshBox(
+        modifier = Modifier
+            .fillMaxSize(),
+        isRefreshing = isRefreshing,
+        onRefresh = viewModel::refreshPictures
+    ) {
+        when (val state = uiState) {
+            is PictureGridUiState.Loading -> LoadingIndicator()
+            is PictureGridUiState.Empty -> EmptyState()
+            is PictureGridUiState.Success -> {
+                Log.d("PictureGridScreen", "Success state: ${state.pictures}")
+                PictureGrid(
+                    pictures = state.pictures,
+                    onPictureClick = onPictureClick
+                )
+            }
+
+            is PictureGridUiState.Error -> ErrorState(
+                error = state.error,
+                onRetry = viewModel::refreshPictures
             )
         }
+    }
+}
 
-        is PictureGridUiState.Error -> ErrorState(
-            error = state.error,
-            onRetry = viewModel::loadPictures
-        )
+@Composable
+private fun ShowToastOnError(
+    errorEventFlow: SharedFlow<DomainError>,
+    context: Context
+) {
+    LaunchedEffect(key1 = Unit) {
+        errorEventFlow.collectLatest { error ->
+            val message = error.getFriendlyMessage(context)
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
     }
 }
 

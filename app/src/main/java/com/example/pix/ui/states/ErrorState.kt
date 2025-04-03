@@ -12,11 +12,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.example.pix.R
 import com.example.pix.domain.error.DomainError
+import com.example.pix.ui.utils.getFriendlyMessage
 
 @Composable
 fun ErrorState(error: DomainError, onRetry: () -> Unit) {
@@ -36,15 +38,7 @@ fun ErrorState(error: DomainError, onRetry: () -> Unit) {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacer_medium)))
 
         Text(
-            text = when (error) {
-                is DomainError.Network -> stringResource(R.string.error_network)
-                is DomainError.Database -> stringResource(R.string.error_database)
-                is DomainError.Server.BadRequest -> stringResource(R.string.error_bad_request)
-                is DomainError.Server.NotFound -> stringResource(R.string.error_not_found)
-                is DomainError.Server.Generic -> stringResource(R.string.error_generic)
-                is DomainError.Unknown ->
-                    "${stringResource(R.string.error_unknown)}: ${error.error.message}"
-            },
+            text = error.getFriendlyMessage(context = LocalContext.current),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
         )
