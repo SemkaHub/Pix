@@ -1,9 +1,11 @@
 package com.example.pix.data.flickr.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class PhotosDto(
-    val page: Int,
-    val pages: Int,
-    val perpage: Int,
-    val photo: List<PhotoDto>,
-    val total: Int
+    @SerializedName("page") val page: Int,
+    @SerializedName("pages") val pages: Int,
+    @SerializedName("perpage") val perPage: Int,
+    @SerializedName("total") val total: Int,
+    @SerializedName("photo") val photo: List<PhotoDto>
 )
