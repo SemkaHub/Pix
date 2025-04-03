@@ -4,6 +4,7 @@ import com.example.pix.data.flickr.mapper.toDomain
 import com.example.pix.domain.model.Picture
 import com.example.pix.domain.model.PictureSize
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
 import retrofit2.HttpException
 import retrofit2.Response
@@ -35,7 +36,7 @@ class FlickrRepository @Inject constructor(
                 Response.error<Unit>(
                     result.code ?: UNEXPECTED_ERROR_CODE,
                     ResponseBody.create(
-                        MediaType.parse(ERROR_MEDIA_TYPE),
+                        ERROR_MEDIA_TYPE.toMediaTypeOrNull(),
                         result.message ?: UNEXPECTED_ERROR_MESSAGE
                     )
                 )
