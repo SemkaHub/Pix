@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Pix</string>
+
+    <string name="text_retry">Retry</string>
+    <string name="text_empty_state">No images found</string>
+
+    <string name="text_second_screen">Second screen</string>
+    <string name="button_back_description">Back</string>
+    <string name="text_zoomable_picture">Zoomable picture: </string>
+
+    // Errors
+    <string name="error_title">Error</string>
+    <string name="error_network">Network error</string>
+    <string name="error_database">Database error</string>
+    <string name="error_bad_request">Bad request</string>
+    <string name="error_not_found">Not found</string>
+    <string name="error_generic">Generic error</string>
+    <string name="error_unknown">Unknown error</string>
 </resources>

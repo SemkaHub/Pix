@@ -25,7 +25,7 @@ class PictureRepositoryImpl @Inject constructor(
     // https://live.staticflickr.com/7372/12502775644_acfd415fa7_w.jpg
     override suspend fun getPictureById(id: String): Result<Picture> = runCatching {
         val picture = roomRepository.getById(id)
-        val betterQualityPicture = PictureSize.K.prefix
+        val betterQualityPicture = PictureSize.B.prefix
         val oldUrl = picture.url
         val newUrl = getBestQualityPictureUrl(oldUrl, betterQualityPicture)
         picture.copy(url = newUrl)

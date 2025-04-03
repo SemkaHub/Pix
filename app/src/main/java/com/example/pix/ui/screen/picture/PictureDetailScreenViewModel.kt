@@ -1,5 +1,6 @@
 package com.example.pix.ui.screen.picture
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,6 +30,7 @@ class PictureDetailScreenViewModel @Inject constructor(
     }
 
     fun loadPicture() {
+        Log.d("PictureDetailScreenViewModel", "loadPicture called: $pictureId")
 
         if (pictureId == null) {
             _state.value =

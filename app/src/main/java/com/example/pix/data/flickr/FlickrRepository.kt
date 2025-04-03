@@ -3,9 +3,8 @@ package com.example.pix.data.flickr
 import com.example.pix.data.flickr.mapper.toDomain
 import com.example.pix.domain.model.Picture
 import com.example.pix.domain.model.PictureSize
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.HttpException
 import retrofit2.Response
 import javax.inject.Inject
@@ -35,10 +34,8 @@ class FlickrRepository @Inject constructor(
             throw HttpException(
                 Response.error<Unit>(
                     result.code ?: UNEXPECTED_ERROR_CODE,
-                    ResponseBody.create(
-                        ERROR_MEDIA_TYPE.toMediaTypeOrNull(),
-                        result.message ?: UNEXPECTED_ERROR_MESSAGE
-                    )
+                    (result.message ?: UNEXPECTED_ERROR_MESSAGE)
+                        .toResponseBody(ERROR_MEDIA_TYPE.toMediaTypeOrNull())
                 )
             )
         }
