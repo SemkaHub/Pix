@@ -7,6 +7,9 @@ import com.example.pix.domain.model.PictureSize
 import com.example.pix.domain.repository.PictureRepository
 import javax.inject.Inject
 
+private const val INVALID_URL_FORMAT_EXCEPTION =
+    "Invalid URL format: Cannot find '_quality.ext' structure in "
+
 class PictureRepositoryImpl @Inject constructor(
     private val flickrRepository: FlickrRepository,
     private val roomRepository: RoomRepository
@@ -40,6 +43,10 @@ class PictureRepositoryImpl @Inject constructor(
         val lastUnderscoreIndex = oldUrl.lastIndexOf('_')
         // Находим индекс последнего символа '.'
         val lastDotIndex = oldUrl.lastIndexOf('.')
+
+        if (lastUnderscoreIndex == -1 || lastDotIndex == -1 || lastUnderscoreIndex > lastDotIndex) {
+            throw IllegalArgumentException(INVALID_URL_FORMAT_EXCEPTION + oldUrl)
+        }
 
         // Часть строки до качества фото
         val prefix = oldUrl.substring(0, lastUnderscoreIndex + 1)
