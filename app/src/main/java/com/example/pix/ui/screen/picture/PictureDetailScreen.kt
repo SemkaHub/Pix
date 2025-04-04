@@ -138,7 +138,7 @@ fun ZoomableImage(
                     val newScale = (scale * zoom).coerceIn(minScale, maxScale)
                     val actualZoom = newScale / scale
 
-                    offset = (offset + centroid - centroid * actualZoom) + pan
+                    offset = (offset + pan) * actualZoom
 
                     scale = newScale
                     rotation += gestureRotation
