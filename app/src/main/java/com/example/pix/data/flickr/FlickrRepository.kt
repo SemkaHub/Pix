@@ -10,7 +10,7 @@ import retrofit2.Response
 import javax.inject.Inject
 
 const val DEFAULT_SEARCH_TEXT = "cats"
-val DEFAULT_QUALITY = PictureSize.Q.prefix
+val DEFAULT_QUALITY = PictureSize.S.prefix
 
 
 const val RESPONSE_OK = "ok"
